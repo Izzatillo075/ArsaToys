@@ -1,5 +1,3 @@
-import { readFileSync, writeFileSync } from 'fs'
-import { resolve } from 'path'
 import { z } from 'zod'
 
 const productSchema = z.object({
@@ -14,8 +12,8 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const product = productSchema.parse(body)
   
-  const dbPath = resolve('./database.json')
-  const dbContent = JSON.parse(readFileSync(dbPath, 'utf-8'))
+  const db = getActiveDB()
+  const dbContent = await db.read()
   
   const newProduct = {
     id: Date.now().toString(),
@@ -23,7 +21,8 @@ export default defineEventHandler(async (event) => {
   }
   
   dbContent.products.push(newProduct)
-  writeFileSync(dbPath, JSON.stringify(dbContent, null, 2))
+
+  await db.update(dbContent)
   
   return newProduct
 })
