@@ -1,5 +1,3 @@
-import { readFileSync, writeFileSync } from 'fs'
-import { resolve } from 'path'
 import { z } from 'zod'
 
 const productUpdateSchema = z.object({
@@ -14,20 +12,20 @@ export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   const updates = await readBody(event)
   const validUpdates = productUpdateSchema.parse(updates)
-  
-  const dbPath = resolve('./database.json')
-  const dbContent = JSON.parse(readFileSync(dbPath, 'utf-8'))
-  
-  const product = dbContent.products.find(p => p.id === id)
+
+  const db = getActiveDB()
+  const dbContent = await db.read()
+
+  const product = dbContent.products.find((p: any) => p.id === id)
   if (!product) {
     throw createError({
       statusCode: 404,
       message: 'Product not found'
     })
   }
-  
+
   Object.assign(product, validUpdates)
-  writeFileSync(dbPath, JSON.stringify(dbContent, null, 2))
-  
+  await db.update(dbContent)
+
   return product
 })
