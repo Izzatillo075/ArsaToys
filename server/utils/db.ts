@@ -32,11 +32,12 @@ class Database {
     if (!data || typeof data !== 'object') {
       return defaultSchema;
     }
+    console.log(data)
 
     return {
-      products: data.record.products || [],
-      categories: data.record.categories || [],
-      orders: data.record.orders || [],
+      products: data?.record.products || [],
+      categories: data?.record.categories || [],
+      orders: data?.record.orders || [],
     };
   } catch (error) {
     console.error('Error reading from JSONBin:', error);
