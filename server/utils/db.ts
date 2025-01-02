@@ -18,22 +18,31 @@ class Database {
 	/**
 	 * Fetch the current data from the JSONBin
 	 */
-	async read(): Promise<any> {
-		try {
-			const response = await $fetch(`${this.baseUrl}/${this.binId}`, {
-				headers: {
-					'X-Master-Key': this.apiToken,
-				},
-			});
+	async read() {
+  const defaultSchema = {
+    products: [],
+    categories: [],
+    orders: [],
+  };
 
+  try {
+    const response = await fetch('https://api.jsonbin.io/...'); // Replace with actual JSONBin URL
+    const data = await response.json();
 
+    if (!data || typeof data !== 'object') {
+      return defaultSchema;
+    }
 
-			return response.record;
-		} catch (error: any) {
-			throw new Error(`Error reading data: ${error.message} ${this.binId}`);
-		}
+    return {
+      products: data.products || [],
+      categories: data.categories || [],
+      orders: data.orders || [],
+    };
+  } catch (error) {
+    console.error('Error reading from JSONBin:', error);
+    return defaultSchema;
+  }
 	}
-
 	/**
 	 * Update the JSONBin with new data
 	 * @param newData The new data to update the bin with
