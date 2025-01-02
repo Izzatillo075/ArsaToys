@@ -68,7 +68,7 @@ const runtimeConfig = useRuntimeConfig();
 let dbConnection: Database | null = null;
 export const getActiveDB = () => {
 	if (!runtimeConfig.jsonBinApiKey || !runtimeConfig.jsonBinBinId) {
-		throw Error("wassup, api key or json bin id is missing chiggas")
+		throw new Error("wassup, api key or json bin id is missing chiggas")
 	}
 	console.log('himorty');
 	if (dbConnection) return dbConnection;
