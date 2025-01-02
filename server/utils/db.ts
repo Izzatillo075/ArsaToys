@@ -34,9 +34,9 @@ class Database {
     }
 
     return {
-      products: data.products || [],
-      categories: data.categories || [],
-      orders: data.orders || [],
+      products: data.record.products || [],
+      categories: data.record.categories || [],
+      orders: data.record.orders || [],
     };
   } catch (error) {
     console.error('Error reading from JSONBin:', error);
